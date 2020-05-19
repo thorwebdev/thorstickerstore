@@ -1,13 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+import Success from './pages/Success';
+import Connect from './pages/Connect';
+
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Router>
+    <Switch>
+      <Route path="/success">
+        <Success />
+      </Route>
+      <Route path="/connect">
+        <Connect />
+      </Route>
+      <Route path="/">
+        <App />
+      </Route>
+    </Switch>
+  </Router>,
   document.getElementById('root')
 );
 

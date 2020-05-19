@@ -41,7 +41,7 @@
 /* Connect button */
 .stripe-connect {
   display: inline-block;
-  margin-bottom: 1px;
+  margin: 10px;
 
   background-image: -webkit-linear-gradient(#28a0e5, #015e94);
   background-image: -moz-linear-gradient(#28a0e5, #015e94);

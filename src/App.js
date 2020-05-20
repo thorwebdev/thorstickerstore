@@ -1,19 +1,79 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
 import { loadStripe } from '@stripe/stripe-js';
 
-function format(amount, currency) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
-  }).format((amount / 100).toFixed(2));
+const formatPrice = ({ amount, currency, quantity }) => {
+  const isClient = typeof window !== 'undefined';
+  const numberFormat = new Intl.NumberFormat(
+    isClient ? window.navigator.language : 'en-US',
+    {
+      style: 'currency',
+      currency,
+      currencyDisplay: 'symbol',
+    }
+  );
+  const parts = numberFormat.formatToParts(amount);
+  let zeroDecimalCurrency = true;
+  for (let part of parts) {
+    if (part.type === 'decimal') {
+      zeroDecimalCurrency = false;
+    }
+  }
+  amount = zeroDecimalCurrency ? amount : amount / 100;
+  const total = (quantity * amount).toFixed(2);
+  return numberFormat.format(total);
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return {
+        ...state,
+        quantity: state.quantity + 1,
+        price: formatPrice({
+          amount: state.unitAmount,
+          currency: state.currency,
+          quantity: state.quantity + 1,
+        }),
+      };
+    case 'decrement':
+      return {
+        ...state,
+        quantity: state.quantity - 1,
+        price: formatPrice({
+          amount: state.unitAmount,
+          currency: state.currency,
+          quantity: state.quantity - 1,
+        }),
+      };
+    case 'setLoading':
+      return { ...state, loading: action.payload.loading };
+    case 'setError':
+      return { ...state, error: action.payload.error };
+    default:
+      throw new Error();
+  }
 }
 
 function App() {
+  const [state, dispatch] = useReducer(reducer, {
+    unitAmount: 400,
+    currency: 'USD',
+    quantity: 1,
+    price: formatPrice({
+      amount: 400,
+      currency: 'USD',
+      quantity: 1,
+    }),
+    loading: false,
+    error: null,
+  });
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    dispatch({ type: 'setLoading', payload: { loading: true } });
 
     const form = new FormData(event.target);
 
@@ -43,7 +103,8 @@ function App() {
     });
 
     if (error) {
-      console.error(error);
+      alert(error.message);
+      dispatch({ type: 'setLoading', payload: { loading: false } });
     }
   };
 
@@ -51,20 +112,44 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>MJÖLNIR STICKER: {format(500, 'usd')}</p>
+        <p>
+          MJÖLNIR STICKER{state.quantity !== 1 ? 'S' : ''}: {state.price}
+        </p>
         <form onSubmit={handleSubmit}>
-          <label htmlFor="quantity">Quantity</label>
-          <input
-            type="number"
-            id="quantity"
-            name="quantity"
-            defaultValue="1"
-            min="1"
-            max="10"
-          />
           <input type="hidden" name="sku" value="thorwebdev_standard" />
           <input type="hidden" name="seller" value="SOSPLUSH" />
-          <button type="submit">Buy Now</button>
+          <div className="quantity-setter">
+            <button
+              type="button"
+              className="increment-btn"
+              disabled={state.quantity === 1}
+              onClick={() => dispatch({ type: 'decrement' })}
+            >
+              -
+            </button>
+            <input
+              type="number"
+              id="quantity"
+              name="quantity"
+              min="1"
+              max="10"
+              value={state.quantity}
+              readOnly
+            />
+            <button
+              type="button"
+              className="increment-btn"
+              disabled={state.quantity === 10}
+              onClick={() => dispatch({ type: 'increment' })}
+            >
+              +
+            </button>
+          </div>
+          <button role="link" type="submit" disabled={state.loading}>
+            {state.loading || !state.price
+              ? `Loading...`
+              : `Buy for ${state.price}`}
+          </button>
         </form>
         <a
           className="App-link"

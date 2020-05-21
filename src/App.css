@@ -205,7 +205,7 @@ button:active {
 }
 button:disabled {
   opacity: 0.5;
-  cursor: none;
+  cursor: not-allowed;
 }
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {

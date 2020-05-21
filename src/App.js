@@ -29,6 +29,9 @@ const formatPrice = ({ amount, currency, quantity }) => {
 function reducer(state, action) {
   switch (action.type) {
     case 'increment':
+      document.querySelector('.App-logo').style.animationDuration = `${
+        state.animationDuration / 2
+      }s`;
       return {
         ...state,
         quantity: state.quantity + 1,
@@ -37,8 +40,12 @@ function reducer(state, action) {
           currency: state.currency,
           quantity: state.quantity + 1,
         }),
+        animationDuration: state.animationDuration / 2,
       };
     case 'decrement':
+      document.querySelector('.App-logo').style.animationDuration = `${
+        state.animationDuration * 2
+      }s`;
       return {
         ...state,
         quantity: state.quantity - 1,
@@ -47,6 +54,7 @@ function reducer(state, action) {
           currency: state.currency,
           quantity: state.quantity - 1,
         }),
+        animationDuration: state.animationDuration * 2,
       };
     case 'setLoading':
       return { ...state, loading: action.payload.loading };
@@ -69,6 +77,7 @@ function App() {
     }),
     loading: false,
     error: null,
+    animationDuration: 10,
   });
 
   const handleSubmit = async (event) => {

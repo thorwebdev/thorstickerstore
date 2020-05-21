@@ -18,6 +18,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
  * so you know the pricing information is accurate.
  */
 const inventory = require('./data/products.json');
+const shippingCountries = require('./data/shippingCountries.json');
 
 exports.handler = async (event) => {
   const { sku, quantity, seller } = JSON.parse(event.body);
@@ -31,7 +32,7 @@ exports.handler = async (event) => {
       payment_method_types: ['card'],
       billing_address_collection: 'auto',
       shipping_address_collection: {
-        allowed_countries: ['US', 'CA'],
+        allowed_countries: shippingCountries,
       },
 
       /*

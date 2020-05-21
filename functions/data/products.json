@@ -1,0 +1,10 @@
+[
+  {
+    "sku": "thorwebdev_standard",
+    "name": "Mjölnir sticker 🔨",
+    "description": "The cutest and happiest Mjölnir.",
+    "image": "https://competent-yonath-5fa774.netlify.app/static/media/logo.6bfe1b4e.svg",
+    "amount": 400,
+    "currency": "USD"
+  }
+]

@@ -9,7 +9,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+    animation: App-logo-spin infinite 0s linear;
   }
 }
 
@@ -27,6 +27,7 @@
 .App-link {
   color: #e0245e;
   text-decoration: none;
+  margin-top: 1em;
 }
 
 @keyframes App-logo-spin {
@@ -129,9 +130,6 @@
   box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.1);
 }
 
-.stripe-connect:active span:before {
-}
-
 .stripe-connect.light-blue {
   background: #b5c3d8;
   background-image: -webkit-linear-gradient(#b5c3d8, #9cabc2);
@@ -181,6 +179,69 @@
 .stripe-connect.dark {
   background: #252525;
   background: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Buttons */
+button {
+  width: 100%;
+  background: #a62ca3;
+  border-radius: 6px;
+  color: white;
+  border: 0;
+  padding: 12px 16px;
+  margin-top: 16px;
+  font-size: calc(10px + 2vmin);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: block;
+}
+button:hover {
+  filter: contrast(115%);
+}
+button:active {
+  transform: translateY(0px) scale(0.98);
+  filter: brightness(0.9);
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  width: 100%;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  transition: box-shadow 0.2s ease;
+  background: none;
+  border: 5px solid #a62ca3;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.quantity-setter {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.quantity-setter input {
+  border-radius: 0;
+  width: 50px;
+  padding: 0;
+  text-align: center;
+}
+
+.quantity-setter .increment-btn {
+  margin-top: 0;
+  border-radius: 0;
+  border: 1px solid #fb9ca4;
 }
 
 /* Images*/

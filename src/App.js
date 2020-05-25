@@ -168,6 +168,9 @@ function App() {
         >
           ©THORWEBDEV
         </a>
+        <a className="Terms-link" href="/terms">
+          Terms · Privacy Policy · Refunds · About
+        </a>
       </header>
     </div>
   );

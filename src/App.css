@@ -30,6 +30,13 @@
   margin-top: 1em;
 }
 
+.Terms-link {
+  color: #a62ca3;
+  text-decoration: none;
+  margin-top: 1em;
+  font-size: calc(8px + 1vmin);
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

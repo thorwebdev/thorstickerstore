@@ -6,6 +6,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 import Success from './pages/Success';
+import Terms from './pages/Terms';
 import Connect from './pages/Connect';
 
 ReactDOM.render(
@@ -13,6 +14,9 @@ ReactDOM.render(
     <Switch>
       <Route path="/success">
         <Success />
+      </Route>
+      <Route path="/terms">
+        <Terms />
       </Route>
       <Route path="/connect">
         <Connect />

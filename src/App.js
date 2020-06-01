@@ -4,7 +4,7 @@ import './App.css';
 
 import { loadStripe } from '@stripe/stripe-js';
 
-const formatPrice = ({ amount, currency, quantity }) => {
+const formatPrice = ({ amount, currency, quantity, noSymbol }) => {
   const isClient = typeof window !== 'undefined';
   const numberFormat = new Intl.NumberFormat(
     isClient ? window.navigator.language : 'en-US',
@@ -22,8 +22,10 @@ const formatPrice = ({ amount, currency, quantity }) => {
     }
   }
   amount = zeroDecimalCurrency ? amount : amount / 100;
-  const total = (quantity * amount).toFixed(2);
-  return numberFormat.format(total);
+  const total = zeroDecimalCurrency
+    ? quantity * amount
+    : (quantity * amount).toFixed(2);
+  return noSymbol ? total.toString() : numberFormat.format(total);
 };
 
 function reducer(state, action) {
@@ -36,8 +38,8 @@ function reducer(state, action) {
         ...state,
         quantity: state.quantity + 1,
         price: formatPrice({
-          amount: state.unitAmount,
-          currency: state.currency,
+          amount: state.prices[state.currency.selected],
+          currency: state.currency.selected,
           quantity: state.quantity + 1,
         }),
         animationDuration: state.animationDuration / 2,
@@ -50,11 +52,21 @@ function reducer(state, action) {
         ...state,
         quantity: state.quantity - 1,
         price: formatPrice({
-          amount: state.unitAmount,
-          currency: state.currency,
+          amount: state.prices[state.currency.selected],
+          currency: state.currency.selected,
           quantity: state.quantity - 1,
         }),
         animationDuration: state.animationDuration * 2,
+      };
+    case 'setCurrency':
+      return {
+        ...state,
+        currency: { ...state.currency, selected: action.payload.currency },
+        price: formatPrice({
+          amount: state.prices[action.payload.currency],
+          currency: action.payload.currency,
+          quantity: state.quantity,
+        }),
       };
     case 'setLoading':
       return { ...state, loading: action.payload.loading };
@@ -67,9 +79,19 @@ function reducer(state, action) {
 
 function App() {
   const [state, dispatch] = useReducer(reducer, {
-    unitAmount: 400,
-    currency: 'USD',
     quantity: 1,
+    currency: {
+      options: ['USD', 'EUR', 'GBP', 'AUD', 'SGD', 'JPY'],
+      selected: 'USD',
+    },
+    prices: {
+      USD: 400,
+      EUR: 360,
+      GBP: 320,
+      AUD: 590,
+      SGD: 550,
+      JPY: 430,
+    },
     price: formatPrice({
       amount: 400,
       currency: 'USD',
@@ -90,9 +112,10 @@ function App() {
       sku: form.get('sku'),
       seller: form.get('seller'),
       quantity: Number(form.get('quantity')),
+      currency: state.currency.selected,
     };
     console.log({ data });
-    const { sessionId, stripeAccount } = await fetch(
+    const { error: functionError, sessionId, stripeAccount } = await fetch(
       '/.netlify/functions/create-checkout',
       {
         method: 'POST',
@@ -102,6 +125,11 @@ function App() {
         body: JSON.stringify(data),
       }
     ).then((res) => res.json());
+
+    if (functionError) {
+      console.warn(functionError);
+      return;
+    }
 
     const stripe = await loadStripe(
       process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY,
@@ -122,7 +150,27 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          MJÖLNIR STICKER{state.quantity !== 1 ? 'S' : ''}: {state.price}
+          MJÖLNIR STICKER{state.quantity !== 1 ? 'S' : ''}:{' '}
+          {formatPrice({
+            amount: state.prices[state.currency.selected],
+            currency: state.currency.selected,
+            quantity: state.quantity,
+            noSymbol: true,
+          })}
+          <select
+            onChange={(e) =>
+              dispatch({
+                type: 'setCurrency',
+                payload: { currency: e.target.value },
+              })
+            }
+          >
+            {state.currency.options.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
         </p>
         <form onSubmit={handleSubmit}>
           <input type="hidden" name="sku" value="thorwebdev_standard" />

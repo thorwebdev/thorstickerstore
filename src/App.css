@@ -238,9 +238,6 @@ select {
   transition: box-shadow 0.2s ease;
   background: none;
   border: 5px solid #a62ca3;
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  appearance: none;
 }
 
 .quantity-setter {

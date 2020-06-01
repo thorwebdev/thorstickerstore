@@ -4,7 +4,13 @@
     "name": "Mjölnir sticker 🔨",
     "description": "The cutest and happiest Mjölnir.",
     "image": "https://competent-yonath-5fa774.netlify.app/static/media/logo.6bfe1b4e.svg",
-    "amount": 400,
-    "currency": "USD"
+    "prices": [
+      { "amount": 400, "currency": "USD" },
+      { "amount": 360, "currency": "EUR" },
+      { "amount": 320, "currency": "GBP" },
+      { "amount": 590, "currency": "AUD" },
+      { "amount": 550, "currency": "SGD" },
+      { "amount": 430, "currency": "JPY" }
+    ]
   }
 ]

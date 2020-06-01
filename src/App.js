@@ -22,7 +22,9 @@ const formatPrice = ({ amount, currency, quantity, noSymbol }) => {
     }
   }
   amount = zeroDecimalCurrency ? amount : amount / 100;
-  const total = zeroDecimalCurrency ? (quantity * amount) : (quantity * amount).toFixed(2);
+  const total = zeroDecimalCurrency
+    ? quantity * amount
+    : (quantity * amount).toFixed(2);
   return noSymbol ? total.toString() : numberFormat.format(total);
 };
 
@@ -31,7 +33,7 @@ function reducer(state, action) {
     case 'increment':
       document.querySelector('.App-logo').style.animationDuration = `${
         state.animationDuration / 2
-        }s`;
+      }s`;
       return {
         ...state,
         quantity: state.quantity + 1,
@@ -45,7 +47,7 @@ function reducer(state, action) {
     case 'decrement':
       document.querySelector('.App-logo').style.animationDuration = `${
         state.animationDuration * 2
-        }s`;
+      }s`;
       return {
         ...state,
         quantity: state.quantity - 1,
@@ -79,13 +81,14 @@ function App() {
   const [state, dispatch] = useReducer(reducer, {
     quantity: 1,
     currency: {
-      options: ['USD', 'EUR', 'GBP', 'SGD', 'JPY'],
-      selected: 'USD'
+      options: ['USD', 'EUR', 'GBP', 'AUD', 'SGD', 'JPY'],
+      selected: 'USD',
     },
     prices: {
       USD: 400,
       EUR: 360,
       GBP: 320,
+      AUD: 590,
       SGD: 550,
       JPY: 430,
     },
@@ -96,7 +99,7 @@ function App() {
     }),
     loading: false,
     error: null,
-    animationDuration: 10
+    animationDuration: 10,
   });
 
   const handleSubmit = async (event) => {
@@ -109,9 +112,10 @@ function App() {
       sku: form.get('sku'),
       seller: form.get('seller'),
       quantity: Number(form.get('quantity')),
+      currency: state.currency.selected,
     };
     console.log({ data });
-    const { sessionId, stripeAccount } = await fetch(
+    const { error: functionError, sessionId, stripeAccount } = await fetch(
       '/.netlify/functions/create-checkout',
       {
         method: 'POST',
@@ -121,6 +125,11 @@ function App() {
         body: JSON.stringify(data),
       }
     ).then((res) => res.json());
+
+    if (functionError) {
+      console.warn(functionError);
+      return;
+    }
 
     const stripe = await loadStripe(
       process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY,
@@ -141,17 +150,27 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          MJÖLNIR STICKER{state.quantity !== 1 ? 'S' : ''}: {formatPrice({
-          amount: state.prices[state.currency.selected],
-          currency: state.currency.selected,
-          quantity: state.quantity,
-          noSymbol: true,
-        })}
-          <select onChange={e => dispatch({ type: 'setCurrency', payload: { currency: e.target.value } })}>{
-            state.currency.options.map(c => (
-              <option key={c} value={c}>{c}</option>
-            ))
-          }</select>
+          MJÖLNIR STICKER{state.quantity !== 1 ? 'S' : ''}:{' '}
+          {formatPrice({
+            amount: state.prices[state.currency.selected],
+            currency: state.currency.selected,
+            quantity: state.quantity,
+            noSymbol: true,
+          })}
+          <select
+            onChange={(e) =>
+              dispatch({
+                type: 'setCurrency',
+                payload: { currency: e.target.value },
+              })
+            }
+          >
+            {state.currency.options.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
         </p>
         <form onSubmit={handleSubmit}>
           <input type="hidden" name="sku" value="thorwebdev_standard" />

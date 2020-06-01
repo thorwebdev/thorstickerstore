@@ -232,6 +232,17 @@ input[type='number'] {
   appearance: none;
 }
 
+select {
+  font-size: calc(10px + 2vmin);
+  color: white;
+  transition: box-shadow 0.2s ease;
+  background: none;
+  border: 5px solid #a62ca3;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 .quantity-setter {
   display: flex;
   justify-content: center;

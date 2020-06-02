@@ -81,7 +81,7 @@ function App() {
   const [state, dispatch] = useReducer(reducer, {
     quantity: 1,
     currency: {
-      options: ['USD', 'EUR', 'GBP', 'AUD', 'SGD', 'JPY'],
+      options: ['USD', 'EUR', 'GBP', 'AUD', 'SGD', 'CNY', 'JPY'],
       selected: 'USD',
     },
     prices: {
@@ -90,6 +90,7 @@ function App() {
       GBP: 320,
       AUD: 590,
       SGD: 550,
+      CNY: 2850,
       JPY: 430,
     },
     price: formatPrice({

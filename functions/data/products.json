@@ -10,6 +10,7 @@
       { "amount": 320, "currency": "GBP" },
       { "amount": 590, "currency": "AUD" },
       { "amount": 550, "currency": "SGD" },
+      { "amount": 2850, "currency": "CNY" },
       { "amount": 430, "currency": "JPY" }
     ]
   }

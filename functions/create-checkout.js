@@ -22,7 +22,7 @@ const shippingCountries = require('./data/shippingCountries.json');
 
 const paymentMethodsByCurrency = {
   USD: ['card', 'alipay'],
-  EUR: ['card', 'bancontact', 'ideal', 'giropay', 'eps', 'p24'],
+  EUR: ['card', 'bancontact', 'ideal', 'giropay', 'eps', 'p24', 'sepa_debit'],
   GBP: ['card'],
   AUD: ['card'],
   SGD: ['card'],
